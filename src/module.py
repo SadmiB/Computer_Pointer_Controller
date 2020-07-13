@@ -64,7 +64,7 @@ class Module:
 
         self.net.infer(input_dict)
 
-        outputs = self.net.requests[0].ouputs[self.output_name]
+        outputs = self.net.requests[0].outputs[self.output_name]
 
         return outputs
 
@@ -89,7 +89,7 @@ class Module:
         log.info("Preprocessing input...")
 
         n, c, h, w = self.input_shape
-        
+        print(image is None)
         img = cv2.resize(image, (w, h))
         img = img.transpose((2,0,1))
         img = img.reshape((n, c, h, w))

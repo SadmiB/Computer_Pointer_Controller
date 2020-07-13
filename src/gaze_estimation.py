@@ -20,6 +20,7 @@ class GazeEstimator(Module):
             self.x = get_coord(0)
             self.y = get_coord(1)
             self.z = get_coord(2)
+            
         def __getitem__(self, i):
             return self.coordinates[i]
 
@@ -27,14 +28,29 @@ class GazeEstimator(Module):
         '''
         TODO: Use this to set your instance variables.
         '''
-        Module.__init__(self, model_name, device, extension)  
+        Module.__init__(self, model_name, device, extension)
+        self.input_shape =  self.model.inputs['left_eye_image'].shape 
 
-    def preprocess_output(self, outputs, init_w, init_h):
+    def predict(self, left_eye, right_eye, head_pose):
+        
+        
+        left_eye = self.preprocess_input(left_eye)
+        right_eye = self.preprocess_input(right_eye)
+
+        input_dict = {'left_eye_image':left_eye, 'right_eye_image':right_eye, 'head_pose_angles':head_pose}
+
+        self.net.infer(input_dict)
+
+        outputs = self.net.requests[0].outputs[self.output_name]
+
+        return outputs
+
+    def preprocess_output(self, outputs):
         '''
         Before feeding the output of this model to the next model,
         you might have to preprocess the output. This function is where you can do that.
         '''
-        results = [GazeEstimator.Result(output['gaze_vector']) for output in outputs]
+        results = [GazeEstimator.Result(output) for output in outputs]
 
         return results
         

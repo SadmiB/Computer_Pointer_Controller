@@ -4,6 +4,9 @@ This has been provided just to give you an idea of how to structure your model c
 '''
 
 from module import Module
+import logging as log
+
+
 
 class HeadPoseEstimator(Module):
     '''
@@ -30,11 +33,29 @@ class HeadPoseEstimator(Module):
         '''
         Module.__init__(self, model_name, device, extension)  
 
+
+    def predict(self, image):
+        '''
+        TODO: You will need to complete this method.
+        This method is meant for running predictions on the input image.
+        '''
+        log.info("Inference...")
+        
+        input_image = self.preprocess_input(image)
+
+        input_dict = {self.input_name: input_image}
+
+        self.net.infer(input_dict)
+
+        outputs = self.net.requests[0].outputs
+
+        return outputs
+
     def preprocess_output(self, outputs):
         '''
         Before feeding the output of this model to the next model,
         you might have to preprocess the output. This function is where you can do that.
         '''
-        results = [HeadPoseEstimator.Result([output['angle_y_fc'], output['angle_p_fc'], output['angle_r_fc']]) for output in outputs]
+        results = HeadPoseEstimator.Result([outputs['angle_y_fc'].tolist()[0][0], outputs['angle_p_fc'].tolist()[0][0], outputs['angle_r_fc'].tolist()[0][0]])
         
         return results
