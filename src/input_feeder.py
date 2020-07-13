@@ -36,10 +36,8 @@ class InputFeeder:
         '''
         while self.cap.isOpened():
             for _ in range(10):
-                flag, frame=self.cap.read()
-                if not flag:
-                    break
-            yield frame
+                    flag, frame=self.cap.read()    
+            yield flag, frame
 
 
     def close(self):

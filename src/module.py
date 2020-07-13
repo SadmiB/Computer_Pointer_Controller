@@ -87,9 +87,8 @@ class Module:
         '''
 
         log.info("Preprocessing input...")
-
         n, c, h, w = self.input_shape
-        print(image is None)
+       
         img = cv2.resize(image, (w, h))
         img = img.transpose((2,0,1))
         img = img.reshape((n, c, h, w))

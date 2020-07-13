@@ -33,8 +33,8 @@ class LandmarksDetector(Module):
             left_eye_x, left_eye_y = int(left_eye_x), int(left_eye_y)
             right_eye_x, right_eye_y = int(right_eye_x), int(right_eye_y)
 
-            left_eye_crop = face[left_eye_y - 30: left_eye_y + 30, left_eye_x - 30:left_eye_x + 30]
-            right_eye_crop = face[right_eye_y - 30: right_eye_y + 30, right_eye_x - 30:right_eye_x + 30]
+            left_eye_crop = face[left_eye_y - 15: left_eye_y + 15, left_eye_x - 15:left_eye_x + 15]
+            right_eye_crop = face[right_eye_y - 15: right_eye_y + 15, right_eye_x - 15:right_eye_x + 15]
 
             return left_eye_crop, right_eye_crop
 
