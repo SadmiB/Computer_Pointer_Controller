@@ -4,6 +4,7 @@ This has been provided just to give you an idea of how to structure your model c
 '''
 
 from module import Module
+import math
 
 class GazeEstimator(Module):
     '''
@@ -23,6 +24,19 @@ class GazeEstimator(Module):
             
         def __getitem__(self, i):
             return self.coordinates[i]
+
+
+        def getMouseCoord(self, roll):
+            
+            
+            roll_cos = math.cos(roll *  math.pi/180)
+
+            roll_sin = math.sin(roll *  math.pi/180)
+
+            mouse_x = self.x * roll_cos + self.x * roll_sin
+            mouse_y = self.y * roll_cos + self.y * roll_sin
+            
+            return mouse_x, mouse_y
 
     def __init__(self, model_name, device='CPU', extension=None):
         '''

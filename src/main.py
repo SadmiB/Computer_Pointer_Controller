@@ -11,6 +11,7 @@ import logging as log
 from argparse import ArgumentParser
 import cv2
 import numpy as np
+import logging as log
 
 DEVICES = ['CPU', 'GPU', 'FPGA', 'VPU']
 
@@ -83,39 +84,39 @@ def main(args):
         if not flag:
             break
 
-        outputs = face_detector.predict(frame)
-        result = face_detector.preprocess_output(outputs, init_w, init_h)[0]
+        try:
 
-        face = result.getFaceCrop(frame)
+            outputs = face_detector.predict(frame)
+            result = face_detector.preprocess_output(outputs, init_w, init_h)[0]
+
+            face = result.getFaceCrop(frame)
+            
+            outputs = landmarks_detector.predict(face)
+            landmarks = landmarks_detector.preprocess_output(outputs)[0]
+
+            left_eye, right_eye = landmarks.getEyesCrop(face)
+
+            outputs = head_pose_estimator.predict(face)
+            head_pose = head_pose_estimator.preprocess_output(outputs)
+
+            head_pose_input = head_pose.get_angles()
+
+            outputs = gaze_estimator.predict(left_eye, right_eye, head_pose_input)
+            gaze = gaze_estimator.preprocess_output(outputs)[0]
+            
+            cv2.imshow('video', cv2.resize(frame, (400, 400)))
         
-        outputs = landmarks_detector.predict(face)
-        landmarks = landmarks_detector.preprocess_output(outputs)[0]
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
+            
 
+            mouse_x, mouse_y = gaze.getMouseCoord(head_pose.roll)
 
+            mouse_controller.move(mouse_x, mouse_y)
 
-        scale = np.array([face.shape[1], face.shape[0]])
-
-        left_eye_x, left_eye_y = np.array(landmarks.left_eye, dtype=np.float64) * scale
-        right_eye_x, right_eye_y = np.array(landmarks.right_eye, dtype=np.float64) * scale
-
-        left_eye_x, left_eye_y = int(left_eye_x), int(left_eye_y)
-        right_eye_x, right_eye_y = int(right_eye_x), int(right_eye_y)
-
-        left_eye, right_eye = landmarks.getEyesCrop(face)
-
-        outputs = head_pose_estimator.predict(face)
-        head_pose = head_pose_estimator.preprocess_output(outputs)
-
-        head_pose_input = [head_pose.yaw, head_pose.pitch, head_pose.roll]
-
-        outputs = gaze_estimator.predict(left_eye, right_eye, head_pose_input)
-        gaze = gaze_estimator.preprocess_output(outputs)[0]
-        
-        print(gaze.x, gaze.y, gaze.z)
-
-        mouse_controller.move(gaze.x*100, gaze.y*100)
-
+        except Exception as e:
+            log.error("Error: {}".format(e))
 
     input_feeder.close()
 

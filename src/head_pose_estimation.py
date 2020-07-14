@@ -27,6 +27,9 @@ class HeadPoseEstimator(Module):
         def __getitem__(self, i):
             return self.angles[i]
 
+        def get_angles(self):
+            return [self.yaw, self.pitch, self.roll]
+
     def __init__(self, model_name, device='CPU', extension=None):
         '''
         TODO: Use this to set your instance variables.
