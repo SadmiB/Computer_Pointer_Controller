@@ -8,7 +8,7 @@ import math
 
 class GazeEstimator(Module):
     '''
-    Class for the Face Detection Model.
+    Class for the Gaze Estimation Model.
     '''
 
     class Result:

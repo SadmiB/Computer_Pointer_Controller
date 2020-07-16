@@ -6,12 +6,15 @@ from head_pose_estimation import HeadPoseEstimator
 from gaze_estimation import GazeEstimator
 from input_feeder import InputFeeder
 from mouse_controller import MouseController
+from visualizer import Visualizer
 
 import logging as log
 from argparse import ArgumentParser
 import cv2
 import numpy as np
 import logging as log
+
+
 
 DEVICES = ['CPU', 'GPU', 'FPGA', 'VPU']
 
@@ -63,7 +66,6 @@ def main(args):
 
     mouse_controller = MouseController()
 
-
     log.info("Loading the input video...")
 
     if args.input == 0:
@@ -104,8 +106,20 @@ def main(args):
             outputs = gaze_estimator.predict(left_eye, right_eye, head_pose_input)
             gaze = gaze_estimator.preprocess_output(outputs)[0]
             
-            cv2.imshow('video', cv2.resize(frame, (400, 400)))
-        
+            real_landmraks = landmarks.getRealEyesCoord(face)        
+
+            visualizer = Visualizer(face, real_landmraks, head_pose_input, gaze)
+
+
+            visualizer.draw_landmarks()
+            visualizer.draw_head_pose()
+            visualizer.draw_gazes()
+            visualizer.show()
+
+            #cv2.circle(face, (int(gaze.x*face.shape[1]), int(gaze.y*face.shape[0])), 3, (0, 255, 0), 2)
+            #cv2.imshow('face', face)
+            cv2.waitKey(0)
+
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 

@@ -25,18 +25,24 @@ class LandmarksDetector(Module):
             return self.points[i]
 
         def getEyesCrop(self, face):
-            scale = np.array([face.shape[1], face.shape[0]])
 
+            left_eye_x, left_eye_y, right_eye_x, right_eye_y = self.getRealEyesCoord(face)
+
+            left_eye_crop = face[left_eye_y - 15: left_eye_y + 15, left_eye_x - 15:left_eye_x + 15]
+            right_eye_crop = face[right_eye_y - 15: right_eye_y + 15, right_eye_x - 15:right_eye_x + 15]
+
+            return left_eye_crop, right_eye_crop
+
+        def getRealEyesCoord(self, face):
+            scale = np.array([face.shape[1], face.shape[0]])
+            
             left_eye_x, left_eye_y = np.array(self.left_eye, dtype=np.float64) * scale
             right_eye_x, right_eye_y = np.array(self.right_eye, dtype=np.float64) * scale
 
             left_eye_x, left_eye_y = int(left_eye_x), int(left_eye_y)
             right_eye_x, right_eye_y = int(right_eye_x), int(right_eye_y)
 
-            left_eye_crop = face[left_eye_y - 15: left_eye_y + 15, left_eye_x - 15:left_eye_x + 15]
-            right_eye_crop = face[right_eye_y - 15: right_eye_y + 15, right_eye_x - 15:right_eye_x + 15]
-
-            return left_eye_crop, right_eye_crop
+            return [left_eye_x, left_eye_y, right_eye_x, right_eye_y]
 
 
 
