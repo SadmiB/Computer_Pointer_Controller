@@ -14,7 +14,10 @@ import cv2
 import numpy as np
 import logging as log
 
-
+FACE_DETECTION_MODEL = 'models/intel/face-detection-adas-binary-0001/FP32-INT1/face-detection-adas-binary-0001'
+LANDMARKS_MODEL = 'models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009'
+HEAD_POSE_MODEL = 'models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001'
+GAZE_MODEL = 'models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002'
 
 DEVICES = ['CPU', 'GPU', 'FPGA', 'VPU']
 
@@ -26,13 +29,13 @@ def build_argparser():
 
     #models
     parser.add_argument('-m_fd', '--model_fd', \
-        default='models/intel/face-detection-adas-binary-0001/FP32-INT1/face-detection-adas-binary-0001', required=False, help='Face detection model name path')
+        default=FACE_DETECTION_MODEL, required=False, help='Face detection model name path')
     parser.add_argument('-m_ld', '--model_ld', \
-        default='models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009', required=False, help='Landmarks detection model name path')
+        default=LANDMARKS_MODEL, required=False, help='Landmarks detection model name path')
     parser.add_argument('-m_hpe', '--model_hpe', \
-        default='models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001', required=False, help='Head pose estimation model name path')
+        default=HEAD_POSE_MODEL, required=False, help='Head pose estimation model name path')
     parser.add_argument('-m_ge', '--model_ge', \
-        default='models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002', required=False, help='Gaze estimation model name path')
+        default=GAZE_MODEL, required=False, help='Gaze estimation model name path')
 
 
     #devices
@@ -134,7 +137,7 @@ def main(args):
         except Exception as e:
             log.error("Error: {}".format(e))
         finally:
-            if cv2.waitKey(60) == 27:
+            if key == 27:
                 break
 
     input_feeder.close()
@@ -142,8 +145,7 @@ def main(args):
 
 if __name__ == '__main__':
 
-    #log.getLogger().setLevel(log.INFO)
-
+    log.getLogger().setLevel(log.INFO)
 
     log.info('Start...')
 
