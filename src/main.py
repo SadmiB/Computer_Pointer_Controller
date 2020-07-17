@@ -41,11 +41,18 @@ def build_argparser():
     parser.add_argument('-d_hpe', '--device_hpe', choices=DEVICES, default='CPU', help='Head pose estimation device')
     parser.add_argument('-d_ge', '--device_ge', choices=DEVICES, default='CPU', help='Gaze estimation device')
 
-    #extensions
+    #extensions (openvino 2020 adds extensions automatically)
     parser.add_argument('-e_fd', '--ext_fd', help='Face detection model extension')
     parser.add_argument('-e_ld', '--ext_ld', help='Landmarks detection model extension')
     parser.add_argument('-e_hpe', '--ext_hpe', help='Head pose estimation model extension')
     parser.add_argument('-e_ge', '--ext_ge', help='Gaze estimation model extension')
+
+
+    #visualization
+    parser.add_argument('-v_fd', '--vis_fd', default=True,required=False, action='store_true', help='Face detection visualization')
+    parser.add_argument('-v_ld', '--vis_ld', default=True ,required=False,action='store_true', help='Landmarks detection visualization')
+    parser.add_argument('-v_hpe', '--vis_hpe', default=True , required=False,action='store_true', help='Head pose estimation visualization')
+    parser.add_argument('-v_ge', '--vis_ge', default=True ,required=False,action='store_true', help='Gaze estimation visualization')
 
 
     return parser
@@ -85,7 +92,7 @@ def main(args):
         
         if not flag:
             break
-
+        key = cv2.waitKey(60)
         try:
 
             outputs = face_detector.predict(frame)
@@ -110,20 +117,15 @@ def main(args):
 
             visualizer = Visualizer(face, real_landmraks, head_pose_input, gaze)
 
+            if args.vis_ld:
+                visualizer.draw_landmarks()
+            if args.vis_hpe:
+                visualizer.draw_head_pose()
+            if args.vis_ge:
+                visualizer.draw_gazes()
+            if args.vis_fd or args.vis_ge or args.vis_hpe or args.vis_ld:    
+                visualizer.show()
 
-            visualizer.draw_landmarks()
-            visualizer.draw_head_pose()
-            visualizer.draw_gazes()
-            visualizer.show()
-
-            #cv2.circle(face, (int(gaze.x*face.shape[1]), int(gaze.y*face.shape[0])), 3, (0, 255, 0), 2)
-            #cv2.imshow('face', face)
-            cv2.waitKey(0)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-            
 
             mouse_x, mouse_y = gaze.getMouseCoord(head_pose.roll)
 
@@ -131,6 +133,9 @@ def main(args):
 
         except Exception as e:
             log.error("Error: {}".format(e))
+        finally:
+            if cv2.waitKey(60) == 27:
+                break
 
     input_feeder.close()
 

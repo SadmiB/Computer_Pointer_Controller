@@ -6,7 +6,9 @@ import math
 
 class Visualizer:
 
-
+    '''
+        Class for visualzing models outputs
+    '''
     def __init__(self, face, eyes_landmarks, head_pose, gaze):
         self.face = face
         self.eyes_landmarks = eyes_landmarks
