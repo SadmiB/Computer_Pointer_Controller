@@ -54,10 +54,10 @@ def build_argparser():
 
 
     #visualization
-    parser.add_argument('-v_fd', '--vis_fd', default=True,required=False, action='store_true', help='Face detection visualization')
-    parser.add_argument('-v_ld', '--vis_ld', default=True ,required=False,action='store_true', help='Landmarks detection visualization')
-    parser.add_argument('-v_hpe', '--vis_hpe', default=True , required=False,action='store_true', help='Head pose estimation visualization')
-    parser.add_argument('-v_ge', '--vis_ge', default=True ,required=False,action='store_true', help='Gaze estimation visualization')
+    parser.add_argument('-v_fd', '--vis_fd', default=False,required=False, action='store_true', help='Face detection visualization')
+    parser.add_argument('-v_ld', '--vis_ld', default=False ,required=False,action='store_true', help='Landmarks detection visualization')
+    parser.add_argument('-v_hpe', '--vis_hpe', default=False , required=False,action='store_true', help='Head pose estimation visualization')
+    parser.add_argument('-v_ge', '--vis_ge', default=False ,required=False,action='store_true', help='Gaze estimation visualization')
 
 
     return parser
@@ -155,10 +155,10 @@ def main(args):
 
             real_landmraks = landmarks.getRealEyesCoord(face)    
 
-            log.info("Face detection            :{:.4f}ms".format(fd_time/frames))    
-            log.info("Landmarks estimation      :{:.4f}ms".format(le_time/frames))     
-            log.info("Head pose estimation      :{:.4f}ms".format(hp_time/frames))     
-            log.info("Gaze estimation           :{:.4f}ms".format(ge_time/frames))     
+            log.info("Face detection time       :{:.4f}ms".format(fd_time/frames))    
+            log.info("Landmarks estimation time :{:.4f}ms".format(le_time/frames))     
+            log.info("Head pose estimation time :{:.4f}ms".format(hp_time/frames))     
+            log.info("Gaze estimation time      :{:.4f}ms".format(ge_time/frames))     
 
             visualizer = Visualizer(face, real_landmraks, head_pose_input, gaze)
 

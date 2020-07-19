@@ -7,3 +7,4 @@ requests==2.22.0
 virtualenv==16.7.9
 numpy==1.17.4
 opencv-contrib-python==4.2.0.34
+PyAutoGUI==0.9.50

@@ -1,8 +1,3 @@
-'''
-This is a sample class for a model. You may choose to use it as-is or make any changes to it.
-This has been provided just to give you an idea of how to structure your model class.
-'''
-
 from module import Module
 import logging as log
 import cv2
@@ -42,8 +37,7 @@ class FaceDetector(Module):
 
     def preprocess_output(self, outputs, _w, _h):
         '''
-        Before feeding the output of this model to the next model,
-        you might have to preprocess the output. This function is where you can do that.
+            Preprocess the output.
         '''
         log.info('Preprocessing output...')
         results = [FaceDetector.Result([int(out[3] * _w), int(out[4] * _h), int(out[5] * _w), int(out[6] * _h)]) \

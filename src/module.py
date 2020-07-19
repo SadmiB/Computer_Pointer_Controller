@@ -1,15 +1,10 @@
-'''
-This is a sample class for a model. You may choose to use it as-is or make any changes to it.
-This has been provided just to give you an idea of how to structure your model class.
-'''
-
 import cv2
 from openvino.inference_engine import IECore
 import logging as log
 
 class Module:
     '''
-    Class for the Face Detection Model.
+        Generic class fro all the model
     '''
     def __init__(self, model_name, device='CPU', extension=None):
         '''

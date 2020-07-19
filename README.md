@@ -1,10 +1,8 @@
 # Computer Pointer Controller
 
-The Computer Pointer Controller main fucntionaly is moving the computer mouse using gazes of a person, to acheive that four deep learnnig models used: face detection model, landmarks estimation, head pose estimation and finally the gaze estimation.
+The Computer Pointer Controller main fucntionaly is moving the computer mouse using a gaze of a person, to achieve that four deep learnig models used: face detection model, landmarks estimation, head pose estimation and finally the gaze estimation model.
 
 ## Project Set Up and Installation
-
-
 
 
 The project is organized in folders, the `src` folder is for the source code, the `bin` folder is for videos and images to use a input, the `models` folder is for the IR models
@@ -51,11 +49,21 @@ https://youtu.be/1SN6S4XHxig
 
 ## Documentation
 
+The following image shows the pipeline of the application which consists of: detecting the person face, feeding the cropped face into the head pose estimation model and the landmarks estimation model, then feeding the outputs of the head pose estimation along with the two croped eyes of the person model into the gaze estimation model, which gives us the necessary information needed in order to move the mouse. 
+
+![Application pipeline](img/pipeline.png)
+
 In order to run the application, you can keep it simple and take the arguments as default by using the below command, in this case the models used are `FP32`, the visualization of the models outputs is activated and the `CPU` is used as the device for all the models:
 
 ```
 > python3 src/main.py -i bin/demo.mp4  
 ```
+In order to visualize the output of the models, use the following command:
+
+```
+> ython3 src/main.py -i bin/demo.mp4 -v_fd -v_ld -v_hpe -v_ge
+```
+
 
 If you want to know more you could use `--help` to get all the possible options:
 
@@ -118,28 +126,25 @@ Documentation of the used models:
 The below results collected in an Ubuntu 18.04 64 bits virtual machine running in VirtualBox with 4GB of RAM and 2 CPU cores.
 
 
-Inference time with preprocessing of input and output for each model depending on the precision of the model using CPU:
+Average inference time with preprocessing of input and output for each model depending on the precision of the model using CPU:
 
 
-| Model                         |     FP32      |   FP16    |  FP16-INT8 |
-|-------------------------------|---------------|-----------|------------|
-|Face detection(FP32-INT1)      |    0.0557ms   | 0.0667ms  | 0.0526ms   |
-|Landmarks estimation           |    0.0025ms   | 0.0021ms  | 0.0030ms   |
-|Head pose estimation           |    0.0043ms   | 0.0037ms  | 0.0030ms   |
-|Gaze estimation                |    0.0042ms   | 0.0068ms  | 0.0035ms   |
-
-
-
+| Model                    |     FP32      |   FP16    |  FP16-INT8 |
+|--------------------------|---------------|-----------|------------|
+|Face detection(FP32-INT1) |    0.0557ms   | 0.0567ms  |  0.0473ms  |
+|Landmarks estimation      |    0.0025ms   | 0.0021ms  |  0.0022ms  |
+|Head pose estimation      |    0.0043ms   | 0.0037ms  |  0.0035ms  |
+|Gaze estimation           |    0.0042ms   | 0.0047ms  |  0.0027ms  |
 
 
 Loading time for each model depending on the precision of the model using the CPU:
 
-| Model                         |     FP32      |   FP16     |  FP16-INT8  |
-|-------------------------------|---------------|------------|-------------|
-|Face detection(FP32-INT1)      |  0.1822 ms    | 0.1811 ms  |  0.1903 ms  |
-|Landmarks estimation           |  0.0737 ms    | 0.0924 ms  |  0.1101 ms  |
-|Head pose estimation           |  0.0813 ms    | 0.1162 ms  |  0.2133 ms  |
-|Gaze estimation                |  0.1069 ms    | 0.1317 ms  |  0.2138 ms  |
+| Model                    |     FP32      |   FP16     |  FP16-INT8  |
+|--------------------------|---------------|------------|-------------|
+|Face detection(FP32-INT1) |  0.1822 ms    | 0.1811 ms  |  0.1903 ms  |
+|Landmarks estimation      |  0.0737 ms    | 0.0924 ms  |  0.1101 ms  |
+|Head pose estimation      |  0.0813 ms    | 0.1162 ms  |  0.2133 ms  |
+|Gaze estimation           |  0.1069 ms    | 0.1317 ms  |  0.2138 ms  |
 
 
 
@@ -148,20 +153,20 @@ Note: For face detection the model available used is of precision FP32-INT1 in a
 
 ## Results
 
-We notice the models with low precisions generally tend to give better latency, but it still difficult to give an exact measures as the time spent depend of the performance of the machine used in that given that when running the application.  Also we notice that there isn't a big difference between the same model with different precisions.
+We notice the models with low precisions generally tend to give better ineference time, but it still difficult to give an exact measures as the time spent depend of the performance of the machine used in that given time when running the application.  Also we notice that there isn't a big difference between the same model with different precisions.
 
 The models with low precisions are more lightweight than the models with high precisons, so this makes the exexution of the network more fast. 
 
-As the above collected results shows that the models with low precisons take much time to load than models with higher precisons with a difference that could reach 0.1 ms.
+As the above collected results shows that the models with low precisons take much time for loading than models with higher precisions with a difference that could reach 0.1 ms.
+
+
+As we can see, using low precision models may affect the accuracy thus missing some useful information that affects the expected results by the application, in addition the gain in inference time is not that big.
 
 ## Stand Out Suggestions
-Coming...
 
-### Async Inference
-If you have used Async Inference in your code, benchmark the results and explain its effects on power and performance of your project.
 
 ### Edge Cases
 
-The application is designed to handle an input video with multiple persons and will still function as expected, the application is getting the information from all the persons and it uses the gaze of the first person to mouve the mouse.
+The application is designed to handle an input video with multiple persons and will still function as expected, the application is getting the information from all the persons and it uses the gaze of the first person to mouve the mouse. which makes the code resusable and esnures the good functioning of this application.
 
-The application is also designed for robust and safe failing, even if some detections are missed in frames, this will not cause an issue, but it keeps going untill the end. so even if there is an issue caused by lighting, it won't cause the application for working.
+The application is also designed for robust and safe failing, even if some detections are missed in frames, this will not cause an issue, but it keeps going untill the end. so even if there is an issue caused by lighting, it won't stop the application for working.

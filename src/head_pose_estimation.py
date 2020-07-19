@@ -1,8 +1,3 @@
-'''
-This is a sample class for a model. You may choose to use it as-is or make any changes to it.
-This has been provided just to give you an idea of how to structure your model class.
-'''
-
 from module import Module
 import logging as log
 
@@ -10,7 +5,7 @@ import logging as log
 
 class HeadPoseEstimator(Module):
     '''
-    Class for the Face Detection Model.
+    Class for the Head Pose Estimation Model.
     '''
     class Result:
 
@@ -31,16 +26,12 @@ class HeadPoseEstimator(Module):
             return [self.yaw, self.pitch, self.roll]
 
     def __init__(self, model_name, device='CPU', extension=None):
-        '''
-        TODO: Use this to set your instance variables.
-        '''
         Module.__init__(self, model_name, device, extension)  
 
 
     def predict(self, image):
         '''
-        TODO: You will need to complete this method.
-        This method is meant for running predictions on the input image.
+            This method is meant for running predictions on the input image.
         '''
         log.info("Inference...")
         
@@ -56,8 +47,7 @@ class HeadPoseEstimator(Module):
 
     def preprocess_output(self, outputs):
         '''
-        Before feeding the output of this model to the next model,
-        you might have to preprocess the output. This function is where you can do that.
+            Preprocess the output.
         '''
         results = HeadPoseEstimator.Result([outputs['angle_y_fc'].tolist()[0][0],
                                             outputs['angle_p_fc'].tolist()[0][0], 
