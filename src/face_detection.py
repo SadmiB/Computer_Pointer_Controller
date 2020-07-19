@@ -40,6 +40,7 @@ class FaceDetector(Module):
             Preprocess the output.
         '''
         log.info('Preprocessing output...')
+        
         results = [FaceDetector.Result([int(out[3] * _w), int(out[4] * _h), int(out[5] * _w), int(out[6] * _h)]) \
                                         for out in outputs[0][0]]
 

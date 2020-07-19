@@ -66,26 +66,21 @@ def main(args):
 
     fd_time, le_time, hp_time, ge_time = 0 ,0 ,0 ,0
 
-    face_detector = FaceDetector(args.model_fd, args.device_fd, args.ext_fd)
     start = time.time()
-    face_detector.load_model()
+    face_detector = FaceDetector(args.model_fd, args.device_fd, args.ext_fd)
     log.info("Face detection laoding time        :{:.4f}".format(time.time() - start ))
 
-    landmarks_detector = LandmarksDetector(args.model_ld, args.device_ld, args.ext_ld)
-    
     start = time.time()
-    landmarks_detector.load_model()
+    landmarks_detector = LandmarksDetector(args.model_ld, args.device_ld, args.ext_ld)
     log.info("Landmarks estimation loading time: :{:.4f}".format(time.time() - start ))
 
-    head_pose_estimator = HeadPoseEstimator(args.model_hpe, args.device_hpe, args.ext_hpe)
     start = time.time()
-    head_pose_estimator.load_model()
+    head_pose_estimator = HeadPoseEstimator(args.model_hpe, args.device_hpe, args.ext_hpe)
     log.info("Head pose estimation loading time: :{:.4f}".format(time.time() - start ))
 
-    gaze_estimator = GazeEstimator(args.model_ge, args.device_ge, args.ext_ge)
     start = time.time()
-    gaze_estimator.load_model()
-    log.info("Gaze estimation loading time:     :{:.4f}".format(time.time() - start ))
+    gaze_estimator = GazeEstimator(args.model_ge, args.device_ge, args.ext_ge)
+    log.info("Gaze estimation loading time:      :{:.4f}".format(time.time() - start ))
 
     mouse_controller = MouseController()
 
@@ -99,11 +94,8 @@ def main(args):
         input_feeder = InputFeeder('video', args.input)
     
 
-    input_feeder.load_data()
+    init_w, init_h = input_feeder.load_data()
     
-    init_w = int(input_feeder.cap.get(3))
-    init_h = int(input_feeder.cap.get(4))
-
 
     frames = 0
 
@@ -177,7 +169,7 @@ def main(args):
             mouse_controller.move(mouse_x, mouse_y)
 
         except Exception as e:
-            log.error("Error: {}".format(e))
+            log.error(e)
         finally:
             if key == 27:
                 break

@@ -25,10 +25,12 @@ class Module:
         try:
             log.info("Loading the model...")
             self.model = self.core.read_network(self.model_structure, self.model_weights)
+            self.check_model()
+            self.net = self.load_model()
         except Exception as e:
             raise ValueError("Could not Initialise the network. Have you enterred the correct model path?", e)
         
-        self.net = None
+        
         self.input_name = next(iter(self.model.inputs))
         self.input_shape = self.model.inputs[self.input_name].shape
         self.output_name = next(iter(self.model.outputs))
@@ -37,19 +39,17 @@ class Module:
 
     def load_model(self):
         '''
-        TODO: You will need to complete this method.
-        This method is for loading the model to the device specified by the user.
+            This method is for loading the model to the device specified by the user.
         If your model requires any Plugins, this is where you can load them.
         '''
-
-        self.net = self.core.load_network(network=self.model, device_name=self.device, num_requests=1)
         
+        self.net = self.core.load_network(network=self.model, device_name=self.device, num_requests=1)
+                
         return self.net
 
     def predict(self, image):
         '''
-        TODO: You will need to complete this method.
-        This method is meant for running predictions on the input image.
+            This method is meant for running predictions on the input image.
         '''
         log.info("Inference...")
         
@@ -64,10 +64,13 @@ class Module:
         return outputs
 
     def check_model(self):
+        '''
+            Checking the support of the model.
+        '''
         log.info("Checking the model support...")
         if self.device == 'CPU':
-            supported_layers = self.core.query_network(self.net, self.device)
-            not_supported_layers = [l for l in self.net.layers.keys() \
+            supported_layers = self.core.query_network(network=self.model, device_name=self.device)
+            not_supported_layers = [l for l in self.model.layers.keys() \
                                     if l not in supported_layers]
 
             if len(not_supported_layers) != 0:

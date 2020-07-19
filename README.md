@@ -14,26 +14,32 @@ In order to get started with the application, you should first download the nece
 
 
 ```
-> source /opt/intel/openvino/bin/setupvars.sh
+$ source /opt/intel/openvino/bin/setupvars.sh
 
-> cd /opt/intel/openvino/deployment_tools/tools/model_downloader/
+$ cd /opt/intel/openvino/deployment_tools/tools/model_downloader/
 
-> sudo pip3 install -r requirements.in
+$ sudo pip3 install -r requirements.in
 
-> sudo python3 downloader.py --name face-detection-adas-binary-0001
+$ sudo python3 downloader.py --name face-detection-adas-binary-0001
 
-> sudo python3 downloader.py --name landmarks-regression-retail-0009
+$ sudo python3 downloader.py --name landmarks-regression-retail-0009
 
-> sudo python3 downloader.py --name head-pose-estimation-adas-0001
+$ sudo python3 downloader.py --name head-pose-estimation-adas-0001
 
-> sudo python3 downloader.py --name gaze-estimation-adas-0002
+$ sudo python3 downloader.py --name gaze-estimation-adas-0002
 
 ```
 
 After downloading the needed IR models for the execution of the application, yo are ready to install the application dependencies:
 
+To install project dependencies in an isolated environment, we create a python virtual environment:
+
 ```
-> sudo pip3 install -r requirements.txt
+$ python3 -m venv /path/
+
+$ source /path/environment/bin/activate
+
+$ sudo pip3 install -r requirements.txt
 ```
 
 ## Demo
@@ -56,12 +62,12 @@ The following image shows the pipeline of the application which consists of: det
 In order to run the application, you can keep it simple and take the arguments as default by using the below command, in this case the models used are `FP32`, the visualization of the models outputs is activated and the `CPU` is used as the device for all the models:
 
 ```
-> python3 src/main.py -i bin/demo.mp4  
+$ python3 src/main.py -i bin/demo.mp4  
 ```
 In order to visualize the output of the models, use the following command:
 
 ```
-> ython3 src/main.py -i bin/demo.mp4 -v_fd -v_ld -v_hpe -v_ge
+$ python3 src/main.py -i bin/demo.mp4 -v_fd -v_ld -v_hpe -v_ge
 ```
 
 
@@ -120,6 +126,35 @@ Documentation of the used models:
 * [Landmarks Estimation Model](https://docs.openvinotoolkit.org/latest/omz_models_intel_landmarks_regression_retail_0009_description_landmarks_regression_retail_0009.html)
 
 * [Gaze Estimation Model](https://docs.openvinotoolkit.org/latest/omz_models_intel_gaze_estimation_adas_0002_description_gaze_estimation_adas_0002.html)
+
+
+Project directory structure:
+
+![Project directory structure](img/project-dir.png)
+
+Project files:
+
+![Project files](img/project-files.png)
+
+The `bin` directory is intended for storing the video input.
+
+The `src` directory is for the source code of the project.
+
+The `img` directory is for images included in the README file.
+
+```
+src
+├── face_detection.py: A class for the Face detection model.
+├── facial_landmarks_detection.py: A class for the Facial landmarks detection.
+├── gaze_estimation.py: A class for Gaze estimation model. 
+├── head_pose_estimation.py: A class for Head pose estimation.
+├── input_feeder.py: A class to feed an input from an image, webcam, or video.
+├── main.py: The main that uses the rest of the classes to do inference and visualize the result. 
+├── module.py: A Generic class that defines the common methods by the models.
+├── mouse_controller.py: A Mouse controller class used to move the mouse. 
+└── visualizer.py: A Visualizer class to visualize the outputs of each model.
+```
+
 
 ## Benchmarks
 
