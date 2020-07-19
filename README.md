@@ -3,14 +3,16 @@
 The Computer Pointer Controller main fucntionaly is moving the computer mouse using gazes of a person, to acheive that four deep learnnig models used: face detection model, landmarks estimation, head pose estimation and finally the gaze estimation.
 
 ## Project Set Up and Installation
-*TODO:* Explain the setup procedures to run your project. For instance, this can include your project directory structure, the models you need to download and where to place them etc. Also include details about how to install the dependencies your project requires.
+
+
+
 
 The project is organized in folders, the `src` folder is for the source code, the `bin` folder is for videos and images to use a input, the `models` folder is for the IR models
 used in the project.
 
+The application is developed and test using openvino 2020.4, in order to install the toolkit in linux refer to the [official documentataion](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html).
+
 In order to get started with the application, you should first download the necessary models:
-
-
 
 
 ```
@@ -20,13 +22,13 @@ In order to get started with the application, you should first download the nece
 
 > sudo pip3 install -r requirements.in
 
-> sudo python3 downloader.py face-detection-adas-binary-0001
+> sudo python3 downloader.py --name face-detection-adas-binary-0001
 
-> sudo python3 downloader.py landmarks-regression-retail-0009
+> sudo python3 downloader.py --name landmarks-regression-retail-0009
 
-> sudo python3 downloader.py head-pose-estimation-adas-0001
+> sudo python3 downloader.py --name head-pose-estimation-adas-0001
 
-> sudo python3 downloader.py gaze-estimation-adas-0002
+> sudo python3 downloader.py --name gaze-estimation-adas-0002
 
 ```
 
@@ -100,17 +102,66 @@ optional arguments:
 
 ```
 
+Documentation of the used models:
+
+
+* [Face Detection Model](https://docs.openvinotoolkit.org/latest/omz_models_intel_face_detection_adas_binary_0001_description_face_detection_adas_binary_0001.html)
+
+* [Head Pose Estimation Model](https://docs.openvinotoolkit.org/latest/omz_models_intel_head_pose_estimation_adas_0001_description_head_pose_estimation_adas_0001.html)
+
+* [Landmarks Estimation Model](https://docs.openvinotoolkit.org/latest/omz_models_intel_landmarks_regression_retail_0009_description_landmarks_regression_retail_0009.html)
+
+* [Gaze Estimation Model](https://docs.openvinotoolkit.org/latest/omz_models_intel_gaze_estimation_adas_0002_description_gaze_estimation_adas_0002.html)
+
 ## Benchmarks
-*TODO:* Include the benchmark results of running your model on multiple hardwares and multiple model precisions. Your benchmarks can include: model loading time, input/output processing time, model inference time etc.
+
+The below results collected in an Ubuntu 18.04 64 bits virtual machine running in VirtualBox with 4GB of RAM and 2 CPU cores.
+
+
+Inference time with preprocessing of input and output for each model depending on the precision of the model using CPU:
+
+
+| Model                         |     FP32      |   FP16    |  FP16-INT8 |
+|-------------------------------|---------------|-----------|------------|
+|Face detection(FP32-INT1)      |    0.0557ms   | 0.0667ms  | 0.0526ms   |
+|Landmarks estimation           |    0.0025ms   | 0.0021ms  | 0.0030ms   |
+|Head pose estimation           |    0.0043ms   | 0.0037ms  | 0.0030ms   |
+|Gaze estimation                |    0.0042ms   | 0.0068ms  | 0.0035ms   |
+
+
+
+
+
+Loading time for each model depending on the precision of the model using the CPU:
+
+| Model                         |     FP32      |   FP16     |  FP16-INT8  |
+|-------------------------------|---------------|------------|-------------|
+|Face detection(FP32-INT1)      |  0.1822 ms    | 0.1811 ms  |  0.1903 ms  |
+|Landmarks estimation           |  0.0737 ms    | 0.0924 ms  |  0.1101 ms  |
+|Head pose estimation           |  0.0813 ms    | 0.1162 ms  |  0.2133 ms  |
+|Gaze estimation                |  0.1069 ms    | 0.1317 ms  |  0.2138 ms  |
+
+
+
+
+Note: For face detection the model available used is of precision FP32-INT1 in all the cases, as this is the only available model.
 
 ## Results
-*TODO:* Discuss the benchmark results and explain why you are getting the results you are getting. For instance, explain why there is difference in inference time for FP32, FP16 and INT8 models.
+
+We notice the models with low precisions generally tend to give better latency, but it still difficult to give an exact measures as the time spent depend of the performance of the machine used in that given that when running the application.  Also we notice that there isn't a big difference between the same model with different precisions.
+
+The models with low precisions are more lightweight than the models with high precisons, so this makes the exexution of the network more fast. 
+
+As the above collected results shows that the models with low precisons take much time to load than models with higher precisons with a difference that could reach 0.1 ms.
 
 ## Stand Out Suggestions
-This is where you can provide information about the stand out suggestions that you have attempted.
+Coming...
 
 ### Async Inference
 If you have used Async Inference in your code, benchmark the results and explain its effects on power and performance of your project.
 
 ### Edge Cases
-There will be certain situations that will break your inference flow. For instance, lighting changes or multiple people in the frame. Explain some of the edge cases you encountered in your project and how you solved them to make your project more robust.
+
+The application is designed to handle an input video with multiple persons and will still function as expected, the application is getting the information from all the persons and it uses the gaze of the first person to mouve the mouse.
+
+The application is also designed for robust and safe failing, even if some detections are missed in frames, this will not cause an issue, but it keeps going untill the end. so even if there is an issue caused by lighting, it won't cause the application for working.
